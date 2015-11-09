@@ -18,6 +18,7 @@ end;
 
 local old_id = 0; -- Doesn't matter.
 local range = 1000; -- Range 
+--local id_skill = GetSkillIdByName("Aqua Swirl");
 repeat
 target=targetMobs(range)
     if (target~=nil and target:GetHp()>0 and not target:IsAlikeDeath() and (target:GetId()~=old_id) ) then  
@@ -27,7 +28,8 @@ target=targetMobs(range)
 
         repeat -- Waitting for the dead of target.
             Sleep(500);
-			UseSkill(GetSkillIdByName("Aqua Swirl"));
+			--UseSkillRaw(id_skill, false, false);
+			Command("/useshortcut 1 1")
         until (target:IsAlikeDeath()); -- Until the mob is dead.
 
         CancelTarget(true); -- Cancel current Target (ESC).
