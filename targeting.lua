@@ -22,7 +22,7 @@ end;
 function summonGivesMana()
 	local mana = 484;
 	local perce_mana = 75; -- Percentage of mana
-	if(GetMe():GetMP() < (mana * perce_mana / 100)) then
+	if(GetMe():GetMp() < (mana * perce_mana / 100)) then
 	-- do something
 	Command("/useshortcut 1 3");
 	end;
