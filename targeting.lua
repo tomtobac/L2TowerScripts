@@ -27,6 +27,7 @@ target=targetMobs(range)
 
         repeat -- Waitting for the dead of target.
             Sleep(500);
+			UseSkill(GetSkillIdByName("Aqua Swirl"));
         until (target:IsAlikeDeath()); -- Until the mob is dead.
 
         CancelTarget(true); -- Cancel current Target (ESC).
