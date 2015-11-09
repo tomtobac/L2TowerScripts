@@ -1,6 +1,4 @@
-function checkPlayers()
-    local white_list = {"one", "two"}; -- White List.
-    local save_distance = 2000; -- Safe distance.
+function checkPlayers(save_distance, white_list)
     local playerlist = GetPlayerList();
     local party_members = GetPartyList();
     local unlisted_players = "UNLISTED PLAYERS \n ";
@@ -30,11 +28,13 @@ function checkPlayers()
 end;
 
 ----------------- PLAYER LIST ---------------------------
-    
+local white_list = {"one", "two"}; -- White List.
+local save_distance = 2000; -- Safe distance.
 repeat
 Sleep 1000;
-if (checkPlayers() ~= nil) then
-ShowToClient("BOT", checkPlayers());
+local var = checkPlayers(save_distance, white_list);
+if (var ~= nil) then
+ShowToClient("BOT", var));
 PlaySound(GetDir() .. "alarm.wav"); -- Play sound
 end;
 until false;
