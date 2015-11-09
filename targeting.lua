@@ -38,7 +38,7 @@ function checkSpot(location)
 		Sleep(5000);
 		if (GetMe():GetMp() < (mana * 40 / 100)) then -- Mana below 40% ~
 		Command("/sit");
-		elseif (GetMe():GetMp() > (mana * 80 / 100)) then -- Mana over 80% ~
+		elseif (GetMe():GetMp() > (mana * 80 / 100)  and GetMe():IsSiting()) then -- Mana over 80% ~
 		Command("/stand");
 		end;
     end;
