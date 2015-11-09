@@ -16,6 +16,20 @@ local list = " \n ";
     return currentmob;
 end;
 
+function arrangedMobListbyDistance(distance)
+    local array = {};
+    local moblist = GetMonsterList();
+    local index = 0;
+    for mob in moblist.list do
+        if (distance>mob:GetDistance() and mob:GetHp()>0 and  not mob:IsAlikeDeath()) then
+            array[index] = mob;
+            index = index + 1;
+        end;
+    end;
+        local sort_func = function( a,b ) return a.GetDistance() < b.GetDistance() end
+        table.sort( array, sort_func )
+    return array;
+end;
 
 local old_id = 0; -- Doesn't matter.
 local range = 1000; -- Range 
