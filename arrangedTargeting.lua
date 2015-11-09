@@ -1,4 +1,3 @@
-
 function arrangedMobListbyDistance(distance)
     local array = {};
     local moblist = GetMonsterList();
@@ -17,7 +16,11 @@ end;
 local var = arrangedMobListbyDistance(2000)
 local index = 0;
 ShowToClient("", "List Mobs: ");
-for mob in var.list do
-ShowToClient(tostring(index), "Name: " .. tostring(mob:GetName()) .. " - distance: " .. tostring(mob:GetDistance()));
-index = index + 1;
+	if (var ~= nil) then
+		ShowToClient("", "No mobs arround.");
+	else
+		for mob in var.list do
+			ShowToClient(tostring(index), "Name: " .. tostring(mob:GetName()) .. " - distance: " .. tostring(mob:GetDistance()));
+			index = index + 1;
+	end;
 end;
