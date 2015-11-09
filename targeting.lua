@@ -31,10 +31,17 @@ end;
 ---------------------- FUNCTION : DONT MOVE ---------------------
 
 function checkSpot(location)
-	SpotLocation = nil;
+	local mana = 484;
+	local perce_mana = 40; -- Percentage of mana
 	SpotLocation = location;
 	if (GetDistanceVector(GetMe():GetLocation(),SpotLocation) > 60) and (GetDistanceVector(SpotLocation,GetMe():GetLocation()) < 2500) then
 		MoveToNoWait(SpotLocation);
+	Sleep(5000);
+		if (GetMe():GetMp() < (mana * perce_mana / 100)) then
+		Command("/sit");
+		elseif (GetMe():GetMp() > (mana * 80 / 100)) then
+		Command("/stand");
+		end;
     end;
 end;
 
@@ -57,7 +64,7 @@ target=targetMobs(range)
 			summonGivesMana();
 			--UseSkillRaw(id_skill, false, false);
 			Command("/useshortcut 1 1")
-        until (target:IsAlikeDeath() or GetTarget() == nil); -- Until the mob is dead.
+        until (target:IsAlikeDeath() or GetTarget() == nil); -- Until the mob is dead or he don't have target.
 
         CancelTarget(true); -- Cancel current Target (ESC).
         --ShowToClient("BOT", tostring(target:GetName()).." is dead.");
@@ -65,3 +72,4 @@ target=targetMobs(range)
 Sleep(1000);
 checkSpot(location);
 until false
+
