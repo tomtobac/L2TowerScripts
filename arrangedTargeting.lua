@@ -19,4 +19,5 @@ local index = 0;
 ShowToClient("", "List Mobs: ");
 for mob in var.list do
 ShowToClient(tostring(index), "Name: " .. tostring(mob:GetName()) .. " - distance: " .. tostring(mob:GetDistance()));
+index = index + 1;
 end;
