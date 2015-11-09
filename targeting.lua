@@ -1,3 +1,4 @@
+----------------------- FUNCTION : TARGETMOBS ---------------------------------
 function targetMobs(range)
 local moblist = GetMonsterList();
 local currentrange=range;
@@ -11,13 +12,28 @@ local list = " \n ";
         end;
     end;
 
-    ShowToClient("MOB LIST",  list);
+    --ShowToClient("MOB LIST",  list);
 
     return currentmob;
 end;
 
+----------------------- FUNCTION : SUMMON GIVES MANA ---------------------------------
+
+function summonGivesMana()
+	local mana = 484;
+	local perce_mana = 75; -- Percentage of mana
+	if(GetMe():GetMP() < (mana * perce_mana / 100)) then
+	-- do something
+	Command("/useshortcut 1 3");
+	end;
+end;
+
+
+----------------------- SCRIPT ---------------------------------
+
+
 local old_id = 0; -- Doesn't matter.
-local range = 1000; -- Range 
+local range = 2500; -- Range 
 --local id_skill = GetSkillIdByName("Aqua Swirl");
 repeat
 target=targetMobs(range)
@@ -25,9 +41,10 @@ target=targetMobs(range)
         ShowToClient("BOT",  tostring("NEW TARGET: "..target:GetName().." - id: " .. target:GetId()));
         Command("/target "..tostring(target:GetName()));
         old_id = target:GetId(); -- Get new ID.
-
+		
         repeat -- Waitting for the dead of target.
-            Sleep(500);
+            Sleep(1000);
+			summonGivesMana();
 			--UseSkillRaw(id_skill, false, false);
 			Command("/useshortcut 1 1")
         until (target:IsAlikeDeath()); -- Until the mob is dead.
