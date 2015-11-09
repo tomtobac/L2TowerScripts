@@ -22,7 +22,8 @@ function checkPlayers()
                 end;
             end;
             if (not check) then
-            unlisted_players = unlisted_players .. tostring(player) .. "\n";
+            distance = player:GetRangeTo(GetMe());
+            unlisted_players = unlisted_players .. player:GetName() .. " at " .. distance/100 .. "\n";
             end;
     end;
     return false;
