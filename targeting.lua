@@ -43,10 +43,10 @@ target=targetMobs(range)
         old_id = target:GetId(); -- Get new ID.
 		
         repeat -- Waitting for the dead of target.
-            Sleep(1000);
-			summonGivesMana();
-			--UseSkillRaw(id_skill, false, false);
-			Command("/useshortcut 1 1")
+        Sleep(1000);
+	summonGivesMana();
+	--UseSkillRaw(id_skill, false, false);
+	Command("/useshortcut 1 1")
         until (target:IsAlikeDeath()); -- Until the mob is dead.
 
         CancelTarget(true); -- Cancel current Target (ESC).
