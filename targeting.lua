@@ -9,7 +9,10 @@ totalmana = 484;				-- Max pool of ur mana character
 perce_mana_summon = 75; 			-- Summon restore mana at Percentage
 perce_mana_sit = 40;				-- Percentage to sit
 perce_mana_stand = 80;				-- Percentage to stand
-restoring_mp = false				-- Are we restoring mp?
+restoring_mp = false;				-- Are we restoring mp?
+
+
+
 
 --Bar controls:
 mainNuke = "/useshortcut 1 1";
@@ -68,13 +71,13 @@ end
 
 
 function useFightSkills()
-	if (GetTarget()~=nil) then
-		if (GetTarget():GetHp()< overhit_damage and not GetTarget():IsAlikeDeath()) then
+
+		if (target:GetHp()< overhit_damage and not target:IsAlikeDeath()) then
 			Command(overHitNuke) 	--OverhitNuke
 		else
 			Command(mainNuke)	--Main nuke
 		end
-	end
+	
 end
 
 ----------------------- FUNCTION : imDeath ---------------------------------
@@ -89,7 +92,7 @@ end
 ----------------------- FUNCTION : TARGET MOB  ---------------------------------
 
 function targetMob()
-local target=targetMobs(range)
+ target=targetMobs(range)
 	if (target~=nil) then -- Target is not null
 		if (target:GetHp() > 0) then -- Target Hp is superior to 0.
 			if (not target:IsAlikeDeath()) then  -- Target is not dead
@@ -122,7 +125,7 @@ repeat
 			Sleep(1500); -- Give us time to use skills!!
 			useFightSkills() -- Using skills
 			--Command("/targetnext") -- Not sure about it. :''(
-        until (GetTarget():IsAlikeDeath() or GetTarget() == nil); -- Until the mob is dead or he don't have target.
+        until (target:IsAlikeDeath() or target == nil); -- Until the mob is dead or he don't have target.
 	
 		summonGivesMana() -- check if summon has to give us mana.
         CancelTarget(true) -- Cancel current Target (ESC).
