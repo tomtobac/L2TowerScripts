@@ -2,7 +2,7 @@
 
 --Global variables don't need declaration
 location = GetMe():GetLocation()		-- Location of the main spot.
-range = 2500; 					-- Range of targeting
+range = 1500; 					-- Range of targeting
 overhit_damage = 200; 				-- Overhit damage
 totalmana = 484;				-- Max pool of ur mana character
 perce_mana_summon = 75; 			-- Summon restore mana at Percentage
@@ -104,14 +104,17 @@ end
 
 
 repeat
-		while (targetMob(target) == nil and GetTarget() == nil) do -- Check if there are mob arround and we don't have one targeted 
+		target = targetMob(target)
+		while (target == nil and GetTarget() == nil) do -- Check if there are mob arround and we don't have one targeted 
 		--There are not mobs available, we can /sit and wait for it
 			if (not GetMe():IsSiting()) then
 			Command("/sit")
+			Sleep(1500)
 			end
+		target = targetMob();
 		end
 		if (GetMe():IsSiting()) then -- Check if we're sitting. -- We were sitting because we didn't have mobs around, we're standing up
-		Comand("/stand")
+		Command("/stand")
 		Sleep(2500) -- Give us time to stand up!
 		end
         Command(targetMob()); -- Target next Mob
