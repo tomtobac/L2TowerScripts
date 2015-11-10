@@ -58,17 +58,17 @@ target=targetMobs(range)
         --ShowToClient("BOT",  tostring("NEW TARGET: "..target:GetName().." - id: " .. target:GetId()));
         Command("/target "..tostring(target:GetName()));
         old_id = target:GetId(); -- Get new ID.
-		
+		summonGivesMana();
         repeat -- Waitting for the dead of target.
-		continue = false
+			continue = false
         	if (GetMe():IsSiting()) then -- if we're sitting, restoring mp, we don't want to enter in this buckle.
         	--continue
-		continue = true
+			continue = true
         	end
-		Sleep(1000);
-		summonGivesMana();
-		--UseSkillRaw(id_skill, false, false);
-		Command("/useshortcut 1 1")
+			Sleep(1500);
+			--UseSkillRaw(id_skill, false, false);
+			Command("/useshortcut 1 1")
+			Command("/targetnext")
         until (target:IsAlikeDeath() or GetTarget() == nil or continue); -- Until the mob is dead or he don't have target.
 
         CancelTarget(true); -- Cancel current Target (ESC).
