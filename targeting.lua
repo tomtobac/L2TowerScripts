@@ -33,6 +33,16 @@ local list = " \n ";
     return currentmob;
 end;
 
+----------------------- FUNCTION : imDeath ---------------------------------
+
+function imDeath()
+	if (GetMe():IsAlikeDeath()) then
+	    SetPause(true);
+	    LogOut();
+	end;
+end;
+
+
 ----------------------- FUNCTION : SUMMON GIVES MANA ---------------------------------
 
 function summonGivesMana()
@@ -95,5 +105,6 @@ repeat
 	Sleep(1000);
 	
 	checkSpot(location); --Return to the begin zone
+	imDeath() --If I'm death, logout
 until false
 
