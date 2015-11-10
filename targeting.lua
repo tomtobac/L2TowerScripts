@@ -59,10 +59,13 @@ target=targetMobs(range)
         old_id = target:GetId(); -- Get new ID.
 		
         repeat -- Waitting for the dead of target.
-            Sleep(1000);
-			summonGivesMana();
-			--UseSkillRaw(id_skill, false, false);
-			Command("/useshortcut 1 1")
+        	if (GetMe():IsSiting()) then -- if we're sitting, restoring mp, we don't want to enter in this buckle.
+        	continue
+        	end
+            	Sleep(1000);
+		summonGivesMana();
+		--UseSkillRaw(id_skill, false, false);
+		Command("/useshortcut 1 1")
         until (target:IsAlikeDeath() or GetTarget() == nil); -- Until the mob is dead or he don't have target.
 
         CancelTarget(true); -- Cancel current Target (ESC).
