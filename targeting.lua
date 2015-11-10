@@ -50,6 +50,7 @@ end;
 local old_id = 0; -- Doesn't matter.
 local range = 2500; -- Range 
 local location = GetMe():GetLocation();
+local continue
 --local id_skill = GetSkillIdByName("Aqua Swirl");
 repeat
 target=targetMobs(range)
@@ -59,7 +60,7 @@ target=targetMobs(range)
         old_id = target:GetId(); -- Get new ID.
 		
         repeat -- Waitting for the dead of target.
-		local continue = false
+		continue = false
         	if (GetMe():IsSiting()) then -- if we're sitting, restoring mp, we don't want to enter in this buckle.
         	--continue
 		continue = true
