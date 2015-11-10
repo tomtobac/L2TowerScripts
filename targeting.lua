@@ -2,10 +2,10 @@
 ---------------------- Final Variable configuration ------------------------
 
 --Global variables don't need declaration
-location = GetMe():GetLocation();	-- Location of the main spot.
-range = 2500; 						-- Range of targeting
+location = GetMe():GetLocation();		-- Location of the main spot.
+range = 2500; 					-- Range of targeting
 overhit_damage = 200; 				-- Overhit damage
-totalmana = 484;					-- Max pool of ur mana character
+totalmana = 484;				-- Max pool of ur mana character
 perce_mana_summon = 75; 			-- Summon restore mana at Percentage
 perce_mana_sit = 40;				-- Percentage to sit
 perce_mana_stand = 80;				-- Percentage to stand
@@ -58,7 +58,7 @@ function checkMana()
 	if (GetMe():GetMp() < (totalmana * perce_mana_sit / 100)) then -- Mana below 40% ~
 		Command("/sit");
 		restoring_mp = true
-	elseif (GetMe():GetMp() > (totalmana * perce_mana_stand / 100) and GetMe():IsSiting()) then -- Mana over 80% ~
+	elseif (GetMe():GetMp() > (totalmana * perce_mana_stand / 100) and GetMe():IsSiting() and restoring_mp) then -- Mana over 80% ~
 		Command("/stand");
 		restoring_mp = false
 	end
