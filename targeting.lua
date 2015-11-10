@@ -1,14 +1,15 @@
+
 ---------------------- Final Variable configuration ------------------------
 
---(Global variables don't need declaration)
+--Global variables don't need declaration
 location = GetMe():GetLocation();	-- Location of the main spot.
-range = 2500; 				-- Range of targeting
-overhit_damage = 200; 			-- Overhit damage
-totalmana = 484;			-- Max pool of ur mana character
-perce_mana_summon = 75; 		-- Summon restore mana at Percentage
-perce_mana_sit = 40;			-- Percentage to sit
-perce_mana_stand = 80;			-- Percentage to stand
-restoring_mp = false			-- Are we restoring mp?
+range = 2500; 						-- Range of targeting
+overhit_damage = 200; 				-- Overhit damage
+totalmana = 484;					-- Max pool of ur mana character
+perce_mana_summon = 75; 			-- Summon restore mana at Percentage
+perce_mana_sit = 40;				-- Percentage to sit
+perce_mana_stand = 80;				-- Percentage to stand
+restoring_mp = false				-- Are we restoring mp?
 
 --Bar controls:
 mainNuke = "/useshortcut 1 1";
@@ -46,7 +47,7 @@ function checkSpot(location)
 	SpotLocation = location;
 	if (GetDistanceVector(GetMe():GetLocation(),SpotLocation) > 60) and (GetDistanceVector(SpotLocation,GetMe():GetLocation()) < 2500) then
 		MoveToNoWait(SpotLocation)
-		Sleep(5000)
+		Sleep(2500)
     	end
     	checkMana() -- call 'check mana' after it moves.
 end
@@ -54,24 +55,27 @@ end
 ----------------------- FUNCTION : CHECK MANA ------------------
 
 function checkMana()
-	if (GetMe():GetMp() < (mana * perce_mana_sit / 100)) then -- Mana below 40% ~
-	Command("/sit");
-	restoring_mp = true
-	elseif (GetMe():GetMp() > (mana * perce_mana_stand / 100)  and GetMe():IsSiting()) then -- Mana over 80% ~
-	Command("/stand");
-	restoring_mp = false
+	if (GetMe():GetMp() < (totalmana * perce_mana_sit / 100)) then -- Mana below 40% ~
+		Command("/sit");
+		restoring_mp = true
+	elseif (GetMe():GetMp() > (totalmana * perce_mana_stand / 100) and GetMe():IsSiting()) then -- Mana over 80% ~
+		Command("/stand");
+		restoring_mp = false
 	end
 end
 
 ---------------------- Function: useFightSkills -----------------------
 
+
 function useFightSkills()
-	if (target:GetHp()< overhit_damage and not target:IsAlikeDeath()) then
-		Command(overHitNuke) 	--OverhitNuke
-	else
-		Command(mainNuke)	--Main nuke
+	if (GetTarget()~=nil) then
+		if (GetTarget():GetHp()< overhit_damage and not GetTarget():IsAlikeDeath()) then
+			Command(overHitNuke) 	--OverhitNuke
+		else
+			Command(mainNuke)	--Main nuke
+		end
 	end
-end;
+end
 
 ----------------------- FUNCTION : imDeath ---------------------------------
 
@@ -83,14 +87,9 @@ function imDeath()
 end
 
 ----------------------- FUNCTION : TARGET MOB  ---------------------------------
---[[
-	TODO:
-	- Check if the mob is already target by another player (and hitting it or close it)
-	- Check if the mob is visible (Can not see the target)
-	- Check if already dead (not working atm)
---]]
+
 function targetMob()
-	local target=targetMobs(range)
+local target=targetMobs(range)
 	if (target~=nil) then -- Target is not null
 		if (target:GetHp() > 0) then -- Target Hp is superior to 0.
 			if (not target:IsAlikeDeath()) then  -- Target is not dead
@@ -100,31 +99,32 @@ function targetMob()
 			end
 		end
 	end
+end
 
 ----------------------- SCRIPT ---------------------------------
 
 
 repeat
-        while (targetMob() == nil and GetTarget() == nil) do -- Check if there are mob arround and we don't have one targeted
+  --      while (targetMob(target) == nil and GetTarget() == nil) do -- Check if there are mob arround and we don't have one targeted
         -- There are not mobs available, we can /sit and wait for it
-        	if (not GetMe():IsSiting()) then
-        	Command("/sit")
-        	end
-	end
-	if (GetMe():IsSiting()) then -- Check if we're sitting.
+     --   	if (not GetMe():IsSiting()) then
+     --   	Command("/sit")
+     --   	end
+	--	end
+	--if (GetMe():IsSiting()) then -- Check if we're sitting.
 	-- We were sitting because we didn't have mobs around, we're standing up
-		Comand("/stand")
-		Sleep(2500) -- Give us time to stand up!
-	end
+		--Comand("/stand")
+		--Sleep(2500) -- Give us time to stand up!
+	--end
         Command(targetMob()); -- Target next Mob
 
         repeat -- Waitting for the dead of target.
-		Sleep(1500); -- Give us time to use skills!!
-		useFightSkills() -- Using skills
-		Command("/targetnext") -- Not sure about it.
-        until (target:IsAlikeDeath() or GetTarget() == nil); -- Until the mob is dead or he don't have target.
+			Sleep(1500); -- Give us time to use skills!!
+			useFightSkills() -- Using skills
+			--Command("/targetnext") -- Not sure about it. :''(
+        until (GetTarget():IsAlikeDeath() or GetTarget() == nil); -- Until the mob is dead or he don't have target.
 	
-	summonGivesMana() -- check if summon has to give us mana.
+		summonGivesMana() -- check if summon has to give us mana.
         CancelTarget(true) -- Cancel current Target (ESC).
         
 	Sleep(1000)
