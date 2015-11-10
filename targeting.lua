@@ -12,8 +12,6 @@ local list = " \n ";
         end;
     end;
 
-    --ShowToClient("MOB LIST",  list);
-
     return currentmob;
 end;
 
@@ -23,8 +21,7 @@ function summonGivesMana()
 	local mana = 484;
 	local perce_mana = 75; -- Percentage of mana
 	if(GetMe():GetMp() < (mana * perce_mana / 100)) then
-	-- do something
-	Command("/useshortcut 1 3");
+	Command("/useshortcut 1 3"); -- Summon uses recharge
 	end;
 end;
 
@@ -54,25 +51,18 @@ local continue
 --local id_skill = GetSkillIdByName("Aqua Swirl");
 repeat
 target=targetMobs(range)
-    if (target~=nil and target:GetHp()>0 and not target:IsAlikeDeath() and (target:GetId()~=old_id) ) then  
-        --ShowToClient("BOT",  tostring("NEW TARGET: "..target:GetName().." - id: " .. target:GetId()));
+    if (target~=nil and target:GetHp()>0 and not target:IsAlikeDeath() and (target:GetId()~=old_id) and not (GetMe():IsSiting()) ) then  
         Command("/target "..tostring(target:GetName()));
         old_id = target:GetId(); -- Get new ID.
 		summonGivesMana();
         repeat -- Waitting for the dead of target.
-			continue = false
-        	if (GetMe():IsSiting()) then -- if we're sitting, restoring mp, we don't want to enter in this buckle.
-        	--continue
-			continue = true
-        	end
-			Sleep(1500);
-			--UseSkillRaw(id_skill, false, false);
-			Command("/useshortcut 1 1")
-			Command("/targetnext")
-        until (target:IsAlikeDeath() or GetTarget() == nil or continue); -- Until the mob is dead or he don't have target.
+		Sleep(1500);
+		--UseSkillRaw(id_skill, false, false);
+		Command("/useshortcut 1 1")
+		Command("/targetnext")
+        until (target:IsAlikeDeath() or GetTarget() == nil); -- Until the mob is dead or he don't have target.
 
         CancelTarget(true); -- Cancel current Target (ESC).
-        --ShowToClient("BOT", tostring(target:GetName()).." is dead.");
     end;
 Sleep(1000);
 checkSpot(location);
