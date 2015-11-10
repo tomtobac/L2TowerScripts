@@ -32,14 +32,20 @@ function checkSpot(location)
 	SpotLocation = location;
 	if (GetDistanceVector(GetMe():GetLocation(),SpotLocation) > 60) and (GetDistanceVector(SpotLocation,GetMe():GetLocation()) < 2500) then
 		MoveToNoWait(SpotLocation);
-		Sleep(5000);
-		if (GetMe():GetMp() < (mana * 40 / 100)) then -- Mana below 40% ~
-		Command("/sit");
-		elseif (GetMe():GetMp() > (mana * 80 / 100)  and GetMe():IsSiting()) then -- Mana over 80% ~
-		Command("/stand");
-		end;
-    end;
-end;
+		Sleep(5000)
+		checkMana()
+    end
+end
+
+----------------------- FUNCTION : CHECK MANA ------------------
+
+function checkMana()
+	if (GetMe():GetMp() < (mana * 40 / 100)) then -- Mana below 40% ~
+	Command("/sit");
+	elseif (GetMe():GetMp() > (mana * 80 / 100)  and GetMe():IsSiting()) then -- Mana over 80% ~
+	Command("/stand");
+	end
+end
 
 ----------------------- SCRIPT ---------------------------------
 
