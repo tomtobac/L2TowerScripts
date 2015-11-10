@@ -1,3 +1,6 @@
+-- GLOBAL VARIABLES
+local mana = 484
+
 ----------------------- FUNCTION : TARGETMOBS ---------------------------------
 function targetMobs(range)
 local moblist = GetMonsterList();
@@ -18,7 +21,6 @@ end;
 ----------------------- FUNCTION : SUMMON GIVES MANA ---------------------------------
 
 function summonGivesMana()
-	local mana = 484;
 	local perce_mana = 75; -- Percentage of mana
 	if(GetMe():GetMp() < (mana * perce_mana / 100)) then
 	Command("/useshortcut 1 3"); -- Summon uses recharge
@@ -28,13 +30,12 @@ end;
 ---------------------- FUNCTION : DONT MOVE ---------------------
 
 function checkSpot(location)
-	local mana = 484;
 	SpotLocation = location;
 	if (GetDistanceVector(GetMe():GetLocation(),SpotLocation) > 60) and (GetDistanceVector(SpotLocation,GetMe():GetLocation()) < 2500) then
-		MoveToNoWait(SpotLocation);
+		MoveToNoWait(SpotLocation)
 		Sleep(5000)
-		checkMana()
-    end
+    	end
+    	checkMana() -- call 'check mana' after it moves.
 end
 
 ----------------------- FUNCTION : CHECK MANA ------------------
