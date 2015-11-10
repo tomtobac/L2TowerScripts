@@ -8,8 +8,11 @@ function arrangedMobListbyDistance(distance)
             index = index + 1;
         end;
     end;
-        --local sort_func = function( a,b ) return a.GetDistance() < b.GetDistance() end
-        --table.sort( array, sort_func )
+     	--[[
+        local sort_func = function( a,b ) return a.GetDistance() < b.GetDistance() end
+        table.sort( array, sort_func )
+        -- If we sort this, we can kill the 1st mob of the list and then, target the 2nd one, and keep doing until the last of the list.
+        --]]
     return array;
 end;
 
