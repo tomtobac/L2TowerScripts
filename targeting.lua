@@ -119,9 +119,9 @@ repeat
         Command(targetMob()); -- Target next Mob
 
         repeat -- Waitting for the dead of target.
-		Sleep(1500);
-		useFightSkills()
-		Command("/targetnext")
+		Sleep(1500); -- Give us time to use skills!!
+		useFightSkills() -- Using skills
+		Command("/targetnext") -- Not sure about it.
         until (target:IsAlikeDeath() or GetTarget() == nil); -- Until the mob is dead or he don't have target.
 	
 	summonGivesMana() -- check if summon has to give us mana.
