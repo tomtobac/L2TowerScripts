@@ -1,13 +1,14 @@
-
 ---------------------- Final Variable configuration ------------------------
 
---(Global variables don't need declaration)
-range = 2500; 			-- Range of targeting
-overhit_damage = 200; 		-- Overhit damage
-Totalmana = 484;		-- Max pool of ur mana character
-perce_mana_summon = 75; 	-- Summon restore mana at Percentage
-perce_mana_sit = 40;		-- Percentage to sit
-perce_mana_stand = 80;		-- Percentage to stand
+--Global variables don't need declaration
+location = GetMe():GetLocation()		-- Location of the main spot.
+range = 2500; 					-- Range of targeting
+overhit_damage = 200; 				-- Overhit damage
+totalmana = 484;				-- Max pool of ur mana character
+perce_mana_summon = 75; 			-- Summon restore mana at Percentage
+perce_mana_sit = 40;				-- Percentage to sit
+perce_mana_stand = 80;				-- Percentage to stand
+restoring_mp = false				-- Are we restoring mp?
 
 --Bar controls:
 mainNuke = "/useshortcut 1 1";
@@ -28,83 +29,110 @@ local list = " \n ";
         end;
     end;
 
-    --ShowToClient("MOB LIST",  list);
-
     return currentmob;
 end;
-
------------------------ FUNCTION : imDeath ---------------------------------
-
-function imDeath()
-	if (GetMe():IsAlikeDeath()) then
-	    SetPause(true);
-	    LogOut();
-	end;
-end;
-
 
 ----------------------- FUNCTION : SUMMON GIVES MANA ---------------------------------
 
 function summonGivesMana()
-	if(GetMe():GetMp() < (mana * perce_mana_summon / 100)) then
-		Command(summonRestoreMp);
+	if(GetMe():GetMp() < (totalmana * perce_mana_summon / 100)) then
+	Command(summonRestoreMp); -- Summon uses recharge
 	end;
 end;
 
 ---------------------- FUNCTION : DONT MOVE ---------------------
 
 function checkSpot(location)
-
 	SpotLocation = location;
 	if (GetDistanceVector(GetMe():GetLocation(),SpotLocation) > 60) and (GetDistanceVector(SpotLocation,GetMe():GetLocation()) < 2500) then
-		MoveToNoWait(SpotLocation);
-		Sleep(5000);
-		if (GetMe():GetMp() < (mana * perce_mana_sit / 100)) then -- Mana below 40% ~
-			Command("/sit");
-		elseif (GetMe():GetMp() > (mana * perce_mana_stand / 100)  and GetMe():IsSiting()) then -- Mana over 80% ~
-			Command("/stand");
-		end;
-    end;
-end;
+		Command("/pickup")
+		Sleep(1000)
+		MoveToNoWait(SpotLocation)
+		Sleep(750)
+    	end
+    	checkMana() -- call 'check mana' after it moves.
+end
+
+----------------------- FUNCTION : CHECK MANA ------------------
+
+function checkMana()
+	if (GetMe():GetMp() < (totalmana * perce_mana_sit / 100)) then -- Mana below 40% ~
+		Command("/sit");
+		restoring_mp = true
+	elseif (GetMe():GetMp() > (totalmana * perce_mana_stand / 100) and GetMe():IsSiting() and restoring_mp) then -- Mana over 80% ~
+		Command("/stand");
+		restoring_mp = false
+	end
+end
 
 ---------------------- Function: useFightSkills -----------------------
 
-function useFightSkills()
-	if (target:GetHp()< overhit_damage){
-		Command(overHitNuke) 	--OverhitNuke
-	}else{
-		Command(mainNuke)	--Main nuke
-	}
 
-end;
+function useFightSkills()
+	if (GetTarget()~=nil) then
+		if (GetTarget():GetHp()< overhit_damage and not GetTarget():IsAlikeDeath()) then
+			Command(overHitNuke) 	--OverhitNuke
+		else
+			Command(mainNuke)	--Main nuke
+		end
+	end
+end
+
+----------------------- FUNCTION : imDeath ---------------------------------
+
+function imDeath()
+	if (GetMe():IsAlikeDeath()) then
+	    SetPause(true)
+	    LogOut()
+	end
+end
+
+----------------------- FUNCTION : TARGET MOB  ---------------------------------
+
+function targetMob()
+local target=targetMobs(range)
+	if (target~=nil) then -- Target is not null
+		if (target:GetHp() > 0) then -- Target Hp is superior to 0.
+			if (not target:IsAlikeDeath()) then  -- Target is not dead
+				if (not restoring_mp) then -- I am not restoring mana
+					return "/target "..tostring(target:GetName())
+				end
+			end
+		end
+	end
+end
 
 ----------------------- SCRIPT ---------------------------------
 
 
-local old_id = 0; -- Doesn't matter.
-local location = GetMe():GetLocation();
-
---local id_skill = GetSkillIdByName("Aqua Swirl");
 repeat
-	target=targetMobs(range)
-    	if (target~=nil and target:GetHp()>0 and not target:IsAlikeDeath() and (target:GetId()~=old_id) ) then  
-        --ShowToClient("BOT",  tostring("NEW TARGET: "..target:GetName().." - id: " .. target:GetId()));
-        	Command("/target "..tostring(target:GetName()));
-        	old_id = target:GetId(); -- Get new ID.
-		
-		repeat -- Waitting for the dead of target.
-            		Sleep(1000);
-			summonGivesMana();
-			--UseSkillRaw(id_skill, false, false);
-			useFightSkills();
-			
-        	until (target:IsAlikeDeath() or GetTarget() == nil); -- Until the mob is dead or he don't have target.
-		CancelTarget(true); -- Cancel current Target (ESC).
-        	--ShowToClient("BOT", tostring(target:GetName()).." is dead.");
-    	end;
-	Sleep(1000);
-	
-	checkSpot(location); --Return to the begin zone
-	imDeath() --If I'm death, logout
-until false
+		local target = targetMob(target)
+		while (target == nil and GetTarget() == nil) do -- Check if there are mob arround and we don't have one targeted 
+		--There are not mobs available, we can /sit and wait for it
+			if (not GetMe():IsSiting()) then
+			Command("/sit")
+			Sleep(1500)
+			end
+		target = targetMob();
+		end
+		if (GetMe():IsSiting()) then -- Check if we're sitting. -- We were sitting because we didn't have mobs around, we're standing up
+			Command("/stand")
+			Sleep(1500) -- Give us time to stand up!
+		end
+        Command(targetMob()); -- Target next Mob
 
+        repeat -- Waitting for the dead of target.
+			Sleep(1500); -- Give us time to use skills!!
+			useFightSkills() -- Using skills
+			--Command("/targetnext") -- Not sure about it. :''(
+			
+        until (GetTarget() == nil or GetTarget():IsAlikeDeath()); -- Until the mob is dead or he don't have target.
+	
+		summonGivesMana() -- check if summon has to give us mana.
+        CancelTarget(true) -- Cancel current Target (ESC).
+        
+	Sleep(1000)
+	checkSpot(location) -- Are we far away from spot? brb, comming back
+	imDeath() -- Are we dead? Logout.
+	
+until false
