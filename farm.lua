@@ -120,7 +120,9 @@ repeat
 	--TARGET
 	while (GetTarget() == nil) do
        		Command(getMobMesProper()); -- Target next Mob
-        	Sleep(2000);
+        	if(GetTarget() == nil) then
+        		Sleep(2000);
+        	end
         end
         --empra skills fins que el mata
         repeat 
