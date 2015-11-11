@@ -46,7 +46,7 @@ function checkSpot(location)
 	if (GetDistanceVector(GetMe():GetLocation(),SpotLocation) > 60) and (GetDistanceVector(SpotLocation,GetMe():GetLocation()) < 2500) then
 		MoveToNoWait(SpotLocation)
 		Sleep(2500)
-    end
+	end
 end
 
 ----------------------- FUNCTION : CHECK MANA ------------------
@@ -63,11 +63,11 @@ end
 ----------------------- FUNCTION : CHECK HP ------------------
 function checkHP()
 	if (GetMe():GetHpPercent() < 80 )then
-    	Command("/target Bruixot");
-    	UseSkill(heal_id)
-    	Sleep(1500);
-    	CancelTarget(true)
-    end
+    		Command("/target Bruixot");
+    		UseSkill(heal_id)
+    		Sleep(1500);
+    		CancelTarget(true)
+    	end
 end
 ---------------------- Function: useFightSkills -----------------------
 
@@ -105,38 +105,37 @@ function postCombat()
 		Command("/pickup")
 		Sleep(1000);
 		contador = contador + 1
-    end
-    
-    checkHP(); --mira si ens hem de curar
-    --si necessitam mana es seu, polling cada 5s
-    while ( checkMana() ) do
-    	Sleep(5000)
-    end
+    	end
+    	checkHP(); --mira si ens hem de curar
+    	--si necessitam mana es seu, polling cada 5s
+    	while ( checkMana() ) do
+    		Sleep(5000)
+    	end
 end
 ----------------------- SCRIPT ---------------------------------
 
 
 repeat
 		
-		--TARGET
-		while (GetTarget() == nil) do
-        	Command(getMobMesProper()); -- Target next Mob
+	--TARGET
+	while (GetTarget() == nil) do
+       		Command(getMobMesProper()); -- Target next Mob
         	Sleep(2000);
         end
         --empra skills fins que el mata
         repeat 
-			
-			useFightSkills() -- Using skills
-			Sleep(1250); -- Give us time to use skills!!
+
+		useFightSkills() -- Using skills
+		Sleep(1250); -- Give us time to use skills!!
 			
         until (GetTarget() == nil or GetTarget():IsAlikeDeath()); -- Until the mob is dead or he don't have target.
 		
-		-- DROP I HEAL
-		postCombat()
+	-- DROP I HEAL
+	postCombat()
 
         
-		Sleep(1000)
-		checkSpot(location) -- Are we far away from spot? brb, comming back
-		imDeath() -- Are we dead? Logout.
+	Sleep(1000)
+	checkSpot(location) -- Are we far away from spot? brb, comming back
+	imDeath() -- Are we dead? Logout.
 	
 until false
