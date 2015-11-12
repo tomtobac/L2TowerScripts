@@ -27,13 +27,13 @@ function arrangedMobListbyDistance(distance)
     return array;
 end;
 
-local var = arrangedMobListbyDistance(2000);
-local index = 0;
+local tmp = arrangedMobListbyDistance(2000);
 ShowToClient("", "List Mobs: ");
-if (var == nil) then
+if (tmp == nil) then
 	ShowToClient("", "No mobs arround.");
 else
-	for index = 0, table.getn(var) do
-	ShowToClient(tostring(index), "Name: " .. tostring(var[index]:GetName()) .. " - distance: " .. tostring(var[index]:GetDistance()));
-	end;
+	for i, mob in pairs(tmp) do
+		ShowToClient(tostring(index), "Name: " .. tostring(mob:GetName()) .. " - distance: " .. tostring(mob:GetDistance()));
+	end
 end;
+
