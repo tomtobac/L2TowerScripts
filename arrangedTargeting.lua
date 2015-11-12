@@ -23,7 +23,7 @@ function arrangedMobListbyDistance(distance)
             index = index + 1;
         end;
     end;
-    bubbleSort(array) -- Sorting the array to lower distance to highest.
+    bubbleSort(array) -- Sorting the array to lower distance to highest. highlight: http://ideone.com/DLj1kW
     return array;
 end;
 
