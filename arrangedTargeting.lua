@@ -1,3 +1,18 @@
+function bubbleSort(A)
+  local itemCount=#A
+  local hasChanged
+  repeat
+    hasChanged = false
+    itemCount=itemCount - 1
+    for i = 1, itemCount do
+      if A[i]:GetDistance() > A[i + 1]:GetDistance() then
+        A[i], A[i + 1] = A[i + 1], A[i]
+        hasChanged = true
+      end
+    end
+  until hasChanged == false
+end
+
 function arrangedMobListbyDistance(distance)
     local array = {};
     local moblist = GetMonsterList();
@@ -8,11 +23,7 @@ function arrangedMobListbyDistance(distance)
             index = index + 1;
         end;
     end;
-     	--[[
-        local sort_func = function( a,b ) return a.GetDistance() < b.GetDistance() end
-        table.sort( array, sort_func )
-        -- If we sort this, we can kill the 1st mob of the list and then, target the 2nd one, and keep doing until the last of the list.
-        --]]
+    bubbleSort(array) -- Sorting the array to lower distance to highest.
     return array;
 end;
 
