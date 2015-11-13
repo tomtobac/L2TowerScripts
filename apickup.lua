@@ -18,12 +18,6 @@ PickUpStatus = false;
 ifound = 0;
 PickupRange = 100;
 
-wanted_file = GetDir() .. "\\logs\\aPickup_wanted.txt";
-unwanted_file = GetDir() .. "\\logs\\aPickup_unwanted.txt";
-
-LastAlarmTime = 0;
-CheckSound = GetDir() .. "\\plugins\\alarm.wav";
-
 -------------
 function OnCreate()
 	this:RegisterCommand("apickup", CommandChatType.CHAT_ALLY, CommandAccessLevel.ACCESS_ME);
