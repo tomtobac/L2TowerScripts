@@ -2,39 +2,43 @@
 Final variables
 --]]
 
-local follow_player = "Mengo"
-local rest_point
-local buff_mage = {}
-local buff_warrior = {}
+local follow_player = "Bruixot"
+--local rest_point
+--local buff_mage = {}
+--local buff_warrior = {}
 local party_members
-local primary_heal_id = 11 -- Heal
+local primary_heal_id = 1011 -- Heal
 local primary_heal_percentage = 65
-local secundary_heal_id = 22 -- Battle Heal
+local secundary_heal_id = 1015 -- Battle Heal
 local secundary_heal_percentage = 35
 
 function goFollow()
   for i = 1, 2, 1 do
   Command("/target "..follow_player)
-  Sleep(1000)
+  Sleep(200)
   end
 end
 
 function getPartyMembers()
-  party_members = GetPartyList()
+	if (GetPartyList() ~= nil) then
+	party_members = GetPartyList()
+	end
 end
 
 function checkHeal()
   getPartyMembers()
   if (party_members ~= nil) then
-    for member in party_members do
-      if (member:GetMaxHp() < secundary_heal_percentage * member:GetMaxHp() / 100) then
+    for member in party_members.list do
+      if (member:GetHp() < secundary_heal_percentage * member:GetMaxHp() / 100) then
+		Command("#" .. member:GetName() .. " has lower hp than " .. tostring(secundary_heal_percentage * member:GetMaxHp() / 100))
         Command("/target "..member:GetName())
-        Sleep(500)
         UseSkill(secundary_heal_id)
-      elseif (member:GetMaxHp() < primary_heal_percentage * member:GetMaxHp() / 100) then
+        Sleep(1300)
+      elseif (member:GetHp() < primary_heal_percentage * member:GetMaxHp() / 100) then
+	  	Command("#" .. member:GetName() .. " has lower hp than " .. tostring(primary_heal_percentage * member:GetMaxHp() / 100))
         Command("/target "..member:GetName())
-        Sleep(500)
         UseSkill(primary_heal_id)
+		Sleep(1300)
       end
     end
   end
