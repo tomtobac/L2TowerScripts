@@ -1,16 +1,5 @@
-----------------------------------------------------
--- Auto Pickup Plugin using /pickup action ingame --
--- Developed by SimonHM                           --
--- Any questions, contact me at: www.iprotion.com --
--- Happy gaming !                                 --
--- Note:                                          --
--- 1. Copy this file apickup.lua and alarm.wav    --
---    into l2tower/plugins folder                 --
--- 2. Copy 2 files: aPickup_wanted.txt and        --
---    aPickup_unwanted.txt in l2tower/logs folfer --
--- 3. Restart game client                         --
--- 4. Put /pickup action in short cut 4 1         --
--- 5. Type command to active: /apickup            --
+
+-- 1. Type command to active: /apickup            --
 ----------------------------------------------------
 -- http://forum.l2tower.eu/thread-free-plugin-apickup-using-ingame-pickup-action-with-filtering-lists
 
