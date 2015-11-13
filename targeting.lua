@@ -2,8 +2,8 @@
 
 --Global variables don't need declaration
 location = GetMe():GetLocation()	-- Location of the main spot.
-range = 1500; 						-- Range of targeting
-overhit_damage = 200; 				-- Overhit damage
+range = 2500; 						-- Range of targeting
+overhit_damage_perce = 20 	 				-- Overhit damage
 totalmana = 132;					-- Max pool of ur mana character
 perce_mana_summon = 75; 			-- Summon restore mana at Percentage
 perce_mana_sit = 40;				-- Percentage to sit
@@ -13,8 +13,9 @@ restoring_mp = false				-- Are we restoring mp?
 --Bar controls:
 aqua_swirl_id = 1175;
 wind_strike_id = 1177;
+ice_bolt_id = 1184
 mainNuke = wind_strike_id
-overHitNuke = wind_strike_id
+overHitNuke = ice_bolt_id
 summonRestoreMp = "/useshortcut 1 4";
 
 ----------------------- FUNCTION : TARGETMOBS ---------------------------------
@@ -52,6 +53,7 @@ function checkSpot(location)
 		Sleep(2500)
     end
     checkMana() -- call 'check mana' after it moves.
+	checkHP()
 end
 
 ----------------------- FUNCTION : CHECK MANA ------------------
@@ -66,12 +68,24 @@ function checkMana()
 	end
 end
 
+----------------------- FUNCTION : CHECK HP ------------------
+
+function checkHP()
+	if (GetMe():GetHp() < (GetMe():GetMaxHp() * perce_mana_sit / 100)) then -- Mana below 40% ~
+		Command("/sit");
+		restoring_mp = true
+	elseif (GetMe():GetHp() > (GetMe():GetMaxHp() * perce_mana_stand / 100) and GetMe():IsSiting() and restoring_mp) then -- Mana over 80% ~
+		Command("/stand");
+		restoring_mp = false
+	end
+end
+
 ---------------------- Function: useFightSkills -----------------------
 
 
 function useFightSkills()
 	if (GetTarget()~=nil) then
-		if (GetTarget():GetHp()< overhit_damage and not GetTarget():IsAlikeDeath()) then
+		if (GetTarget():GetHp()< GetTarget():GetHp() * overhit_damage_perce / 100 and not GetTarget():IsAlikeDeath()) then
 			--Command(overHitNuke) 	--OverhitNuke
 			UseSkill(overHitNuke);
 		else
@@ -130,6 +144,7 @@ repeat
 		target = targetMob();
 		end
 		
+		
 		if (GetMe():IsSiting()) then -- Check if we're sitting. -- We were sitting because we didn't have mobs around, we're standing up
 		Command("/stand")
 		Sleep(2500) -- Give us time to stand up!
@@ -148,7 +163,7 @@ repeat
 	
 		summonGivesMana() -- check if summon has to give us mana.
 		if (GetTarget() ~= nil) then
-        	CancelTarget(true) -- Cancel current Target (ESC).
+        CancelTarget(true) -- Cancel current Target (ESC).
 		end
         
 	Sleep(1000)
