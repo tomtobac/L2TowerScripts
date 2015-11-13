@@ -18,7 +18,7 @@ function arrangedMobListbyDistance(distance)
     local moblist = GetMonsterList();
     local index = 0;
     for mob in moblist.list do
-        if (distance<mob:GetDistance() and mob:GetHp()>0 and  not mob:IsAlikeDeath()) then
+        if (distance>mob:GetDistance() and mob:GetHp()>0 and  not mob:IsAlikeDeath()) then
             array[index] = mob;
             index = index + 1;
         end;
