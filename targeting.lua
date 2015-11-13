@@ -2,9 +2,9 @@
 
 --Global variables don't need declaration
 location = GetMe():GetLocation()	-- Location of the main spot.
-range = 1000; 						-- Range of targeting
+range = 1500; 						-- Range of targeting
 overhit_damage = 200; 				-- Overhit damage
-totalmana = 484;					-- Max pool of ur mana character
+totalmana = 132;					-- Max pool of ur mana character
 perce_mana_summon = 75; 			-- Summon restore mana at Percentage
 perce_mana_sit = 40;				-- Percentage to sit
 perce_mana_stand = 80;				-- Percentage to stand
@@ -12,18 +12,17 @@ restoring_mp = false				-- Are we restoring mp?
 
 --Bar controls:
 aqua_swirl_id = 1175;
-mainNuke = "/useshortcut 1 1";
-overHitNuke = "/useshortcut 1 2";
-summonRestoreMp = "/useshortcut 1 3";
+wind_strike_id = 1177;
+mainNuke = wind_strike_id
+overHitNuke = wind_strike_id
+summonRestoreMp = "/useshortcut 1 4";
 
 ----------------------- FUNCTION : TARGETMOBS ---------------------------------
 function targetMobs(range)
 local moblist = GetMonsterList();
 local currentrange=range;
-local list = " \n ";
     
     for mob in moblist.list do
-            list = list .. tostring(mob:GetName()) .. " \n ";
         if (currentrange>mob:GetDistance() and mob:GetHp()>0 and  not mob:IsAlikeDeath()) then
             currentrange=mob:GetDistance(); -- Looking for the nearest mob.
             currentmob=mob;
@@ -32,6 +31,9 @@ local list = " \n ";
 
     return currentmob;
 end;
+
+
+
 
 ----------------------- FUNCTION : SUMMON GIVES MANA ---------------------------------
 
@@ -48,8 +50,8 @@ function checkSpot(location)
 	if (GetDistanceVector(GetMe():GetLocation(),SpotLocation) > 60) and (GetDistanceVector(SpotLocation,GetMe():GetLocation()) < 2500) then
 		MoveToNoWait(SpotLocation)
 		Sleep(2500)
-    	end
-    	checkMana() -- call 'check mana' after it moves.
+    end
+    checkMana() -- call 'check mana' after it moves.
 end
 
 ----------------------- FUNCTION : CHECK MANA ------------------
@@ -71,10 +73,10 @@ function useFightSkills()
 	if (GetTarget()~=nil) then
 		if (GetTarget():GetHp()< overhit_damage and not GetTarget():IsAlikeDeath()) then
 			--Command(overHitNuke) 	--OverhitNuke
-			UseSkill(aqua_swirl_id);
+			UseSkill(overHitNuke);
 		else
 			--Command(mainNuke)	--Main nuke
-			UseSkill(aqua_swirl_id);
+			UseSkill(mainNuke);
 		end
 	end
 end
@@ -104,30 +106,38 @@ local target=targetMobs(range)
 	end
 end
 
+--------------------- FUNCTION : SIT ---------------------------
+
+function goSit()
+	if (not GetMe():IsSiting()) then --There are not mobs available, we can /sit and wait for it
+	Command("/sit")
+	Sleep(2000)
+	end
+end
+
+-----------------------------------------------------------
+
+
 ----------------------- SCRIPT ---------------------------------
 
 
 repeat
 		local target = targetMob()
-		--target = Target(targetMob():GetId())
 		
 		while (target == nil and GetTarget() == nil) do -- Check if there are mob arround and we don't have one targeted 
-		--There are not mobs available, we can /sit and wait for it
-			if (not GetMe():IsSiting()) then
-			Command("/sit")
-			Sleep(1500)
-			end
+		goSit()
+		Sleep(1000)
 		target = targetMob();
-		--target = Target(targetMob():GetId())
 		end
+		
 		if (GetMe():IsSiting()) then -- Check if we're sitting. -- We were sitting because we didn't have mobs around, we're standing up
 		Command("/stand")
 		Sleep(2500) -- Give us time to stand up!
 		end
         
+		if (targetMob() ~= nil) then
 		Command(targetMob()); -- Target next Mob
-		--Target(targetMob():GetId())
-		
+		end
 
         repeat -- Waitting for the dead of target.
 			Sleep(1500); -- Give us time to use skills!!
@@ -138,7 +148,7 @@ repeat
 	
 		summonGivesMana() -- check if summon has to give us mana.
 		if (GetTarget() ~= nil) then
-        CancelTarget(true) -- Cancel current Target (ESC).
+        	CancelTarget(true) -- Cancel current Target (ESC).
 		end
         
 	Sleep(1000)
