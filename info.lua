@@ -32,13 +32,16 @@ function mostraSkills()
 end
 
 function mostraItems()
-	local var = ItemDataList()
-	--local var = var:GetList()
+	-- http://forum.l2tower.eu/thread-free-plugin-apickup-using-ingame-pickup-action-with-filtering-lists
+	local var = GetItemManager()
 	if(var == nil) then
 	ShowToclient("bot", "nothing to show")
 	else
-		for obj in var.list do
-		ShowToClient("obj", "hola")
+	local i = 0
+		while (i < var:GetCount())do
+		local item = var:GetByIdx(i)
+		i = i + 1
+		ShowToClient("item", "id: " .. tostring(item:GetName()) .. " -  " .. tostring(item:GetNameId()))
 		end
 	end
 end
