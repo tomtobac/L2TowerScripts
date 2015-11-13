@@ -1,3 +1,12 @@
+--[[
+
+PLUGGIN.
+/targetfix - enables plugin
+source: http://forum.l2tower.eu/thread-off-topic-free-pack-of-scripts
+
+--]]
+
+
 TimeTillRequestChangeTarget = 1000*30 ; -- in mile seconds
 TimeTillTryFixMovement = 1000*5 ; -- in mile seconds
 
