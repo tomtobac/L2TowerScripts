@@ -4,7 +4,7 @@ function bubbleSort(A)
   repeat
     hasChanged = false
     itemCount=itemCount - 1
-    for i = 1, itemCount do
+    for i = 0, itemCount do
       if A[i]:GetDistance() > A[i + 1]:GetDistance() then
         A[i], A[i + 1] = A[i + 1], A[i]
         hasChanged = true
@@ -33,7 +33,6 @@ if (tmp == nil) then
 	ShowToClient("", "No mobs arround.");
 else
 	for i, mob in pairs(tmp) do
-		ShowToClient(tostring(index), "Name: " .. tostring(mob:GetName()) .. " - distance: " .. tostring(mob:GetDistance()));
+		ShowToClient(tostring(i), "Name: " .. tostring(mob:GetName()) .. " - distance: " .. tostring(mob:GetDistance()));
 	end
 end;
-
