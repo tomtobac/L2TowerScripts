@@ -25,15 +25,17 @@ end
 
 function checkHeal()
   getPartyMembers()
-  for member in party_members do
-    if (member:GetMaxHp() < secundary_heal_percentage * member:GetMaxHp() / 100) then
-      Command("/target "..member:GetName())
-      Sleep(500)
-      UseSkill(secundary_heal_id)
-    elseif (member:GetMaxHp() < primary_heal_percentage * member:GetMaxHp() / 100) then
-      Command("/target "..member:GetName())
-      Sleep(500)
-      UseSkill(primary_heal_id)
+  if (party_members ~= nil) then
+    for member in party_members do
+      if (member:GetMaxHp() < secundary_heal_percentage * member:GetMaxHp() / 100) then
+        Command("/target "..member:GetName())
+        Sleep(500)
+        UseSkill(secundary_heal_id)
+      elseif (member:GetMaxHp() < primary_heal_percentage * member:GetMaxHp() / 100) then
+        Command("/target "..member:GetName())
+        Sleep(500)
+        UseSkill(primary_heal_id)
+      end
     end
   end
 end
