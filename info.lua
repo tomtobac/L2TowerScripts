@@ -41,7 +41,7 @@ function mostraItems()
 		while (i < var:GetCount())do
 		local item = var:GetByIdx(i)
 		i = i + 1
-		ShowToClient("item", "id: " .. tostring(item:GetName()) .. " -  " .. tostring(item:GetNameId()))
+		ShowToClient("ITEM", tostring(item:GetName()) .. " ==> " .. tostring(item:GetQuantity()) .. " || Distance: " .. tostring(item:GetRangeTo(GetMe())))
 		end
 	end
 end
@@ -49,7 +49,7 @@ end
 
 --mostraMobs()
 ShowToClient("Bot", "otra")
---mostraSkills()
+mostraSkills()
 mostraItems()
 --[[
 TargetNpc("Plain Grizzly", 21097)
