@@ -11,6 +11,9 @@ local primary_heal_id = 1011 -- Heal
 local primary_heal_percentage = 65
 local secundary_heal_id = 1015 -- Battle Heal
 local secundary_heal_percentage = 35
+local shield_id = 1040
+local ww_id = 1204
+local concentration = 1078
 
 function goFollow()
 	if (GetTarget() ~= nil and GetTarget() == follow_player) then
@@ -28,13 +31,42 @@ function getPartyMembers()
 	end
 end
 
+function buff(user, skill_id)
+	if (not user:GotBuff(skill_id)) then
+		Command("/target "..user:GetName())
+		UseSkill(skill_id)
+		Sleep(1500)
+	end
+end
+
+function checkBuff()
+  getPartyMembers()
+  if (party_members ~= nil) then
+    for member in party_members.list do
+		buff(member, shield_id)
+		buff(member, ww_id)
+		buff(member, concentration)	
+    end
+  end
+end
+
+function checkBuffMyself()
+		local me = GetMe()
+		buff(me, shield_id)
+		buff(me, ww_id)
+		buff(me, concentration)	
+end
+
+
 function checkLeaderSit()
 	Command("/target " .. follow_player)
 	if (GetTarget() ~= nil) then
 		if (GetTarget():IsSiting() and  not GetMe():IsSiting()) then
+		Sleep(1500)
 		Command("/sit")
 		Sleep(1000)
 		elseif (not GetTarget():IsSiting() and GetMe():IsSiting()) then
+		Sleep(1500)
 		Command("/stand")
 		Sleep(1000)
 		end
@@ -66,5 +98,7 @@ ShowToClient("Supp", "Initialized")
 repeat
 goFollow()
 checkHeal()
+checkBuff()
+--checkBuffMyself()
 checkLeaderSit()
 until false
