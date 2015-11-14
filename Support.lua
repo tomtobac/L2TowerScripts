@@ -2,7 +2,7 @@
 Final variables
 --]]
 
-local follow_player = "Bruixot"
+local follow_player = "Mengo"
 --local rest_point
 --local buff_mage = {}
 --local buff_warrior = {}
@@ -13,10 +13,13 @@ local secundary_heal_id = 1015 -- Battle Heal
 local secundary_heal_percentage = 35
 
 function goFollow()
-  for i = 1, 2, 1 do
-  Command("/target "..follow_player)
-  Sleep(200)
-  end
+	if (GetTarget() ~= nil and GetTarget() == follow_player) then
+		Command("/target %target")
+	else
+		Command("/target " .. follow_player)
+		Sleep(500)
+		Command("/target " .. follow_player)
+	end
 end
 
 function getPartyMembers()
@@ -25,17 +28,31 @@ function getPartyMembers()
 	end
 end
 
+function checkLeaderSit()
+	Command("/target " .. follow_player)
+	if (GetTarget() ~= nil) then
+		if (GetTarget():IsSiting() and  not GetMe():IsSiting()) then
+		Command("/sit")
+		Sleep(1000)
+		elseif (not GetTarget():IsSiting() and GetMe():IsSiting()) then
+		Command("/stand")
+		Sleep(1000)
+		end
+	end
+end
+
+
 function checkHeal()
   getPartyMembers()
   if (party_members ~= nil) then
     for member in party_members.list do
       if (member:GetHp() < secundary_heal_percentage * member:GetMaxHp() / 100) then
-		Command("#" .. member:GetName() .. " has lower hp than " .. tostring(secundary_heal_percentage * member:GetMaxHp() / 100))
+		--Command("#" .. member:GetName() .. " has lower hp than " .. tostring(secundary_heal_percentage * member:GetMaxHp() / 100))
         Command("/target "..member:GetName())
         UseSkill(secundary_heal_id)
         Sleep(1300)
       elseif (member:GetHp() < primary_heal_percentage * member:GetMaxHp() / 100) then
-	  	Command("#" .. member:GetName() .. " has lower hp than " .. tostring(primary_heal_percentage * member:GetMaxHp() / 100))
+	  	--Command("#" .. member:GetName() .. " has lower hp than " .. tostring(primary_heal_percentage * member:GetMaxHp() / 100))
         Command("/target "..member:GetName())
         UseSkill(primary_heal_id)
 		Sleep(1300)
@@ -49,4 +66,5 @@ ShowToClient("Supp", "Initialized")
 repeat
 goFollow()
 checkHeal()
+checkLeaderSit()
 until false
