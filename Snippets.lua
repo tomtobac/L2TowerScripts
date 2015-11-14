@@ -17,3 +17,7 @@ for skill in skills.list do
 end;
 -- Get 1 Skill
 GetSkillIdByName("Wind Strike");
+
+
+(me:GotBuff(CheckSonataID6)
+
