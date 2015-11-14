@@ -2,7 +2,7 @@
 
 --Global variables don't need declaration
 location = GetMe():GetLocation()		-- Location of the main spot.
-range = 20; 					-- Range of targeting
+range = 3500; 					-- Range of targeting
 overhit_damage = 200; 				-- Overhit damage
 totalmana = 484;				-- Max pool of ur mana character
 perce_mana_summon = 75; 			-- Summon restore mana at Percentage
@@ -20,15 +20,18 @@ skillHeal ="/useshortcut 1 5";
 function targetMobs(range)
 local moblist = GetMonsterList();
 local currentrange=range;
-local currentmob = nil
 
-	for mob in moblist.list do
+	currentmob = nil
+    for mob in moblist.list do
+	
+		
 		local maxRange = GetDistanceVector(location,GetMe():GetLocation()) + mob:GetDistance();
-        	if (currentrange > maxRange and mob:GetHp()>0 and  not mob:IsAlikeDeath()) then
-        		currentrange=mob:GetDistance(); -- Looking for the nearest mob.
-            		currentmob=mob;
-        	end;
-    	end;
+        if (currentrange > maxRange and mob:GetHp()>0 and  not mob:IsAlikeDeath()) then
+            currentrange=mob:GetDistance(); -- Looking for the nearest mob.
+            currentmob=mob;
+        end;
+    end;
+
     return currentmob;
 end;
 
@@ -43,12 +46,8 @@ end;
 ---------------------- FUNCTION : DONT MOVE ---------------------
 
 function checkSpot(location)
-	selfHeal()
-	Command("/pickup")
-	Sleep(1000)
-	Command("/pickup")
-	Sleep(1000)
-	MoveToNoWait(location)
+		--selfHeal()
+		MoveToNoWait(location)
 		
     	checkMana() -- call 'check mana' after it moves.
 end
@@ -56,16 +55,20 @@ end
 ----------------------- FUNCTION : CHECK MANA ------------------
 
 function checkMana()
-	if (GetMe():GetMp() < (totalmana * perce_mana_sit / 100)) then -- Mana below 40% ~
+	if (GetMe():GetMp() < (totalmana * perce_mana_sit / 100) and not restoring_mp) then -- Mana below 40% ~
 		Command("/sit");
 		restoring_mp = true
 	elseif (GetMe():GetMp() > (totalmana * perce_mana_stand / 100) and GetMe():IsSiting() and restoring_mp) then -- Mana over 80% ~
 		Command("/stand");
 		restoring_mp = false
-	elseif (restoring_mp or GetTarget()~=nil) then
-		Sleep(1000)
-		Command("/pickup")
-	end --Si hi ha un target q te pega.... hem de fer algp
+	elseif (not GetMe():IsSiting() and restoring_mp) then
+		fight()
+		restoring_mp = false
+	end
+		
+	if (not GetMe():IsSiting()) then
+		summonGivesMana() -- check if summon has to give us mana.
+	end
 end
 
 ---------------------- Function: useFightSkills -----------------------
@@ -110,21 +113,25 @@ function selfHeal()
 	end
 end
 
+function fight()
+	repeat -- Waitting for the dead of target.
+				Sleep(1500); -- Give us time to use skills!!
+				useFightSkills() -- Using skills	
+	until (GetTarget() == nil or GetTarget():IsAlikeDeath()); -- Until the mob is dead or he don't have target.
+end
 ----------------------- SCRIPT ---------------------------------
 
 repeat
 		
 
-	local target = targetMob()
-	if(target ~= nil){
-		Command(target); -- Target next Mob
-	}
-        repeat -- Waitting for the dead of target.
-			Sleep(1500); -- Give us time to use skills!!
-			useFightSkills() -- Using skills	
-        until (GetTarget() == nil or GetTarget():IsAlikeDeath()); -- Until the mob is dead or he don't have target.
-	
-		summonGivesMana() -- check if summon has to give us mana.
+		local target = targetMob()
+		if(target ~= nil) then
+			Command(target); -- Target next Mob
+		end
+		
+        fight();
+		
+		
         CancelTarget(true) -- Cancel current Target (ESC).
         
 	Sleep(1000)
